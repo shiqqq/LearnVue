@@ -7,16 +7,23 @@
   </head>
   <body>
     <div id="app">
-        {{message}}
-        <cpn :number1='num1' :number2='num2' />
+      {{message}}
+      <cpn
+        :number1="num1"
+        :number2="num2"
+        @number1change="num1change"
+        @number2change="num2change"
+      />
     </div>
 
     <template id="cpn">
       <div>
-          <p>{{number1}}</p>
-          <input type="text" v-model='dnumber1'/>
-          <p>{{number2}}</p>
-          <input type="text" v-model='dnumber2' />
+        <!-- v-model 本质是两个指令， v-bind 动态绑定数据 /@input=“”事件（$event.target.value）  -->
+        <p>{{number1}}</p>
+        <input type="text" v-model="dnumber1" />
+        <!-- <input type="text" :value="dnumber1" @input="num1Input" /> -->
+        <p>{{number2}}</p>
+        <input type="text" :value="dnumber2" @input="num2Input" />
       </div>
     </template>
 
@@ -26,9 +33,18 @@
       const app = new Vue({
         el: "#app",
         data: {
-          message: "你好sdfsd啊",
+          message: "你好啊",
           num1: 1,
           num2: 2,
+        },
+        methods: {
+            //注意这些方法要写在methods: {} 里面！！
+          num1change(value) {
+            this.num1 = value; //js中类型转换的方法！
+          },
+          num2change(value) {
+            this.num2 = value;
+          },
         },
         //在此Vue实例中注册一个组件
         components: {
@@ -36,7 +52,7 @@
             //组件里面要用模版
             template: "#cpn",
             props: {
-                /* 注意 单向数据流
+              /* 注意 单向数据流
                  每次父级组件发生变更时，子组件中所有的 prop 都将会刷新为最新的值。
                  这意味着你不应该在一个子组件内部改变 prop。*/
               number1: Number,
@@ -45,16 +61,41 @@
             /*不要直接改上面props里面的数值，上面props里的数据可直接拿来展示，但不能进行修改
             所有的 prop 都使得其父子 prop 之间形成了一个单向下行绑定：父级 prop 的更新会向下流动到子组件中，但是反过来则不行。
             这样会防止从子组件意外变更父级组件的状态，从而导致你的应用的数据流向难以理解。
-            1.定义一个本地的 data property
+            1.定义一个本地的 data property 「data 为定义的函数，return一个对象」
             2.定义一个计算属性 
             */
-           data() {
-               return {
-                   dnumber1: this.number1,
-                   dnumber2: this.number2,
-               }
-           }
-
+            data() {
+              return {
+                dnumber1: this.number1,
+                dnumber2: this.number2,
+              };
+            },
+            methods: {
+              // num1Input(event) {
+              //     this.dnumber1 = event.target.value;
+              //     this.$emit('number1change', this.dnumber1);
+              //     //在input值发生改变的时候，发出一个事件$emit(),把子组件里的值传出去
+              // },
+              num2Input(event) {
+                this.dnumber2 = event.target.value;
+                this.$emit("number2change", this.dnumber2);
+              },
+            },
+            watch: {
+              dnumber1(newValue) {
+                this.dnumber1 = newValue;
+                console.log(newValue);
+                this.$emit("number1change", newValue);
+              },
+            },
+            /*注意组件中还有一个属性 watch 对象类型， 对象 里可以写很多函数 这些函数可以用于监听属性值的改变
+            比如要监听message值的改变
+            watch: {
+            message(newValue, oldValue){
+                    //do something ...
+                }
+            }
+           */
           },
         },
       });
