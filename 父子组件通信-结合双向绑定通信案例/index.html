@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>父子组件通信案例</title>
+  </head>
+  <body>
+    <div id="app">
+        {{message}}
+        <cpn :number1='num1' :number2='num2' />
+    </div>
+
+    <template id="cpn">
+      <div>
+          <p>{{number1}}</p>
+          <input type="text" v-model='dnumber1'/>
+          <p>{{number2}}</p>
+          <input type="text" v-model='dnumber2' />
+      </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+      // 注册Vue实例
+      const app = new Vue({
+        el: "#app",
+        data: {
+          message: "你好sdfsd啊",
+          num1: 1,
+          num2: 2,
+        },
+        //在此Vue实例中注册一个组件
+        components: {
+          cpn: {
+            //组件里面要用模版
+            template: "#cpn",
+            props: {
+                /* 注意 单向数据流
+                 每次父级组件发生变更时，子组件中所有的 prop 都将会刷新为最新的值。
+                 这意味着你不应该在一个子组件内部改变 prop。*/
+              number1: Number,
+              number2: Number,
+            },
+            /*不要直接改上面props里面的数值，上面props里的数据可直接拿来展示，但不能进行修改
+            所有的 prop 都使得其父子 prop 之间形成了一个单向下行绑定：父级 prop 的更新会向下流动到子组件中，但是反过来则不行。
+            这样会防止从子组件意外变更父级组件的状态，从而导致你的应用的数据流向难以理解。
+            1.定义一个本地的 data property
+            2.定义一个计算属性 
+            */
+           data() {
+               return {
+                   dnumber1: this.number1,
+                   dnumber2: this.number2,
+               }
+           }
+
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
