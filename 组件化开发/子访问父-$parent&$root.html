@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>子访问父</title>
+  </head>
+  <!-- 不建议这样使用，因为组件是要复用的，这样都直接和父组件直接关联了 耦合度太高了 -->
+  <body>
+    <div id="app"> 
+      <cpn></cpn>
+    </div>
+
+    <template id="cpn">
+      <div> 
+          <h2>我是子组件～～</h2>
+          <button @click="btnClick">按钮</button>
+      </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+      // 注册Vue实例
+      const app = new Vue({
+        el: "#app",
+        data: {
+          message: "你好啊",
+        },
+        methods: {
+         
+        },
+        //在此Vue实例中注册一个组件
+        components: {
+          cpn: {
+            //组件里面要用模版
+            template: "#cpn",
+            props: {
+              
+            },
+            data(){
+              return {
+                name: '我是子组件的name'
+              }
+            },
+            methods: {
+              showMessage(){
+                console.log("我是子组件的方法-showMessage（）")
+              },
+              btnClick(){
+            console.log("点击子组件里的按钮");
+            //现在要在子组件里访问父组件 注意：this.$parent is not a function,而是返回一个vue实例/VueComponent 
+            // 可以直接点出来父组件里的属性
+            console.log(this.$parent.message);
+            console.log(this.$root.message);//$root很少用，因为vue实例不放一般基本的属性
+           
+          }
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
