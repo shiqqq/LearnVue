@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>父访问子</title>
+  </head>
+  <body>
+    <div id="app"> 
+     <!-- this.$children()用的比较少，因为返回的是数组 要用下标识去去，不确定是哪一个
+          可以直接用$refs 默认返回一个空对象 组件上加ref="aaa" 调用时 this.$refs.aaa
+        以上两种方法可以做到 父组件直接调用子组件里面的所有的内容！
+      -->
+      <cpn ref="aaa"></cpn>
+      <cpn></cpn>
+      <button @click="btnClick">按钮</button>
+    </div>
+
+    <template id="cpn">
+      <div> 我是子组件～～
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+      // 注册Vue实例
+      const app = new Vue({
+        el: "#app",
+        data: {
+          message: "你好啊",
+        },
+        methods: {
+          //现在想在父组件里访问子组件，直接用this.$children 
+          // 注意 this.$children 是一个数组
+          btnClick(){
+            console.log("点击父组件里的按钮");
+            console.log(this.$children);
+            this.$children[0].showMessage();
+            console.log(this.$refs.aaa.name);
+          }
+        },
+        //在此Vue实例中注册一个组件
+        components: {
+          cpn: {
+            //组件里面要用模版
+            template: "#cpn",
+            props: {
+              
+            },
+            data(){
+              return {
+                name: '我是子组件的name'
+              }
+            },
+            methods: {
+              showMessage(){
+                console.log("我是子组件的方法-showMessage（）")
+              }
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
