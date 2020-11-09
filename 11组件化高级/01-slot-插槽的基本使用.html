@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>slot --基本使用 </title>
+    <!-- 组件的插槽是为了使所封装的组件更具有扩展性
+         1.基本使用：在组件里 <slot> </slot>
+         2.插槽的默认值 <slot> <button></button> </slot>
+         3.如果有多个值，同时放入组件进行替换时，一起作为替换元素
+    -->
+  </head>
+  <body>
+    <div id="app"> 
+      <cpn></cpn>
+      <cpn><button>按钮</button></cpn>
+    </div>
+
+    <template id="cpn">
+      <div> 
+          <h2>我是子组件～～</h2>
+          <slot></slot>
+      </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+      const app = new Vue({
+        el: "#app",
+        data: {
+          message: "你好啊",
+        },
+        methods: {
+         
+        },
+        components: {
+          cpn: {
+            template: "#cpn",
+            props: {
+              
+            },
+            data(){
+              return {
+                name: '我是子组件的name'
+              }
+            },
+            methods: {
+              showMessage(){
+                console.log("我是子组件的方法-showMessage（）")
+              },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
